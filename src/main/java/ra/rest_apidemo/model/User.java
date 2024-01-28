@@ -34,7 +34,7 @@ public class User {
     private String phone;
     @Column(name = "birth_date")
     private Date birthDate;
-    @Column(name = "user_status", columnDefinition = "boolean default false")
+    @Column(name = "user_status")
     private boolean status;
     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))

@@ -3,6 +3,7 @@ package ra.rest_apidemo.security.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,12 +14,16 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ra.rest_apidemo.security.jwt.JwtAuthTokewnFilter;
+import ra.rest_apidemo.repository.UserRepository;
+import ra.rest_apidemo.security.jwt.JwtAuthTokenFilter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +35,10 @@ import java.util.Map;
 public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
-    private final JwtAuthTokewnFilter jwtAuthTokenFilter;
+    private final JwtAuthTokenFilter jwtAuthTokenFilter;
+
+
+    private final UserRepository userRepository;
 
     @Bean
     AuthenticationEntryPoint authenticationEntryPoint() {
@@ -49,6 +57,30 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }
+//@Bean
+//public UserDetailsService userDetailsService () {
+//    return username -> (UserDetails) userRepository.findByUserName(username).orElseThrow(() ->
+//            new UsernameNotFoundException("UserName not found"));
+//}
+//    @Bean
+//    public AuthenticationProvider authenticationProvider (){
+//        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+//        daoAuthenticationProvider.setUserDetailsService(userDetailsService());
+//        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+//        return daoAuthenticationProvider;
+//    }
+//
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
+//        return config.getAuthenticationManager();
+//    }
+
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -74,4 +106,20 @@ public class SecurityConfig {
         http.addFilterBefore(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
+
+
+
+
+
+
+//    @Bean
+//    public UserDetailsService userDetailsService (){
+//        return new UserDetailsService() {
+//            @Override
+//            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//                return null;
+//            }
+//        }
+//    }
 }
